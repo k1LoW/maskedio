@@ -9,19 +9,29 @@ import (
 
 var _ io.Writer = (*Writer)(nil)
 
+const defaultRedactMessage = "*****"
+
+type masker struct {
+	keywords      []string
+	redactMessage string
+	replacer      *strings.Replacer
+	mu            sync.RWMutex
+}
+
 type Writer struct {
-	w        io.Writer
-	keywords []string
-	maskword string
-	buf      []byte
-	replacer *strings.Replacer
-	mu       sync.Mutex
+	w   io.Writer
+	m   *masker
+	buf []byte
+	mu  sync.Mutex
 }
 
 func NewWriter(w io.Writer) *Writer {
 	return &Writer{
-		w:        w,
-		maskword: "*****",
+		w: w,
+		m: &masker{
+			keywords:      nil,
+			redactMessage: defaultRedactMessage,
+		},
 	}
 }
 
@@ -34,7 +44,9 @@ func (w *Writer) Write(p []byte) (n int, err error) {
 		w.mu.Unlock()
 	}
 
-	for _, keyword := range w.keywords {
+	w.m.mu.RLock()
+	defer w.m.mu.RUnlock()
+	for _, keyword := range w.m.keywords {
 		var kw string
 		for _, r := range keyword {
 			kw += string(r)
@@ -52,7 +64,7 @@ func (w *Writer) Write(p []byte) (n int, err error) {
 		}
 	}
 
-	s := w.replacer.Replace(string(p))
+	s := w.m.mask(string(p))
 
 	if _, err := w.w.Write([]byte(s)); err != nil {
 		return 0, err
@@ -72,43 +84,47 @@ func (w *Writer) Flush() error {
 }
 
 func (w *Writer) SetKeyword(keywords ...string) {
-	w.mu.Lock()
-	defer w.mu.Unlock()
-	w.keywords = append(w.keywords, keywords...)
-	w.setupReplacer()
+	w.m.mu.Lock()
+	defer w.m.mu.Unlock()
+	defer w.m.setup()
+	w.m.keywords = append(w.m.keywords, keywords...)
 }
 
 func (w *Writer) UnsetKeyword(keywords ...string) {
 	w.mu.Lock()
 	defer w.mu.Unlock()
+	defer w.m.setup()
 	for _, keyword := range keywords {
-		for i, k := range w.keywords {
+		for i, k := range w.m.keywords {
 			if k == keyword {
-				w.keywords = append(w.keywords[:i], w.keywords[i+1:]...)
+				w.m.keywords = append(w.m.keywords[:i], w.m.keywords[i+1:]...)
 			}
 		}
 	}
-	w.setupReplacer()
 }
 
 func (w *Writer) ResetKeywords() {
 	w.mu.Lock()
 	defer w.mu.Unlock()
-	w.keywords = nil
-	w.replacer = nil
+	defer w.m.setup()
+	w.m.keywords = nil
 }
 
-func (w *Writer) SetMaskWord(maskword string) {
+func (w *Writer) SetRedactMessage(redactMessage string) {
 	w.mu.Lock()
 	defer w.mu.Unlock()
-	w.maskword = maskword
-	w.setupReplacer()
+	defer w.m.setup()
+	w.m.redactMessage = redactMessage
 }
 
-func (w *Writer) setupReplacer() {
+func (m *masker) mask(in string) string {
+	return m.replacer.Replace(in)
+}
+
+func (m *masker) setup() {
 	var reps []string
-	for _, keyword := range w.keywords {
-		reps = append(reps, keyword, w.maskword)
+	for _, keyword := range m.keywords {
+		reps = append(reps, keyword, m.redactMessage)
 	}
-	w.replacer = strings.NewReplacer(reps...)
+	m.replacer = strings.NewReplacer(reps...)
 }
