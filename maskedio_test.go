@@ -85,3 +85,65 @@ func TestWriter(t *testing.T) {
 		})
 	}
 }
+
+func TestNewSyncedWriter(t *testing.T) {
+	w := NewWriter(new(bytes.Buffer))
+	buf := new(bytes.Buffer)
+	nw := w.NewSyncedWriter(buf)
+
+	{
+		w.SetKeyword("passw0rd")
+		nw.Write([]byte("password: passw0rd"))
+		nw.Flush()
+
+		got := buf.String()
+		want := "password: *****"
+		if got != want {
+			t.Errorf("got %q, want %q", got, want)
+		}
+		buf.Reset()
+	}
+
+	{
+		w.SetKeyword("secret")
+		nw.Write([]byte("password: secret"))
+		nw.Flush()
+		got := buf.String()
+		want := "password: *****"
+		if got != want {
+			t.Errorf("got %q, want %q", got, want)
+		}
+		buf.Reset()
+	}
+}
+
+func TestNewSameWriter(t *testing.T) {
+	w := NewWriter(new(bytes.Buffer))
+	w.SetKeyword("passw0rd")
+	buf := new(bytes.Buffer)
+	nw := w.NewSameWriter(buf)
+
+	{
+		nw.Write([]byte("password: passw0rd"))
+		nw.Flush()
+
+		got := buf.String()
+		want := "password: *****"
+		if got != want {
+			t.Errorf("got %q, want %q", got, want)
+		}
+		buf.Reset()
+	}
+
+	{
+		w.SetKeyword("secret")
+		nw.Write([]byte("password: secret"))
+		nw.Flush()
+		got := buf.String()
+		want := "password: secret"
+		if got != want {
+			t.Errorf("got %q, want %q", got, want)
+		}
+		buf.Reset()
+	}
+}

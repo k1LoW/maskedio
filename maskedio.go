@@ -39,9 +39,9 @@ func NewWriter(w io.Writer) *Writer {
 }
 
 // NewSyncedWriter returns a new Writer with syncronized masking rule.
-func (w *Writer) NewSyncedWriter(ww io.Writer) *Writer {
+func (w *Writer) NewSyncedWriter(nw io.Writer) *Writer {
 	return &Writer{
-		w: ww,
+		w: nw,
 		r: w.r,
 	}
 }
