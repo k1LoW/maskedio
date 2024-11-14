@@ -11,17 +11,24 @@ var _ io.Writer = (*Writer)(nil)
 
 const defaultRedactMessage = "*****"
 
-type rule struct {
+type Rule struct {
 	keywords      []string
 	redactMessage string
 	replacer      *strings.Replacer
 	mu            sync.RWMutex
 }
 
+func NewRule() *Rule {
+	return &Rule{
+		keywords:      nil,
+		redactMessage: defaultRedactMessage,
+	}
+}
+
 // Writer is a wrapper around io.Writer that masks the output based on the keywords provided.
 type Writer struct {
 	w                io.Writer
-	r                *rule
+	r                *Rule
 	buf              []byte
 	mu               sync.Mutex
 	disableAutoFlush bool
@@ -31,10 +38,7 @@ type Writer struct {
 func NewWriter(w io.Writer) *Writer {
 	return &Writer{
 		w: w,
-		r: &rule{
-			keywords:      nil,
-			redactMessage: defaultRedactMessage,
-		},
+		r: NewRule(),
 	}
 }
 
@@ -50,7 +54,7 @@ func (w *Writer) NewSyncedWriter(nw io.Writer) *Writer {
 func (w *Writer) NewSameWriter(ww io.Writer) *Writer {
 	keywords := make([]string, len(w.r.keywords))
 	_ = copy(keywords, w.r.keywords)
-	r := &rule{
+	r := &Rule{
 		keywords:      keywords,
 		redactMessage: w.r.redactMessage,
 	}
@@ -113,44 +117,6 @@ func (w *Writer) Flush() error {
 	return nil
 }
 
-// SetKeyword sets the keywords to be masked in the output.
-func (w *Writer) SetKeyword(keywords ...string) {
-	w.r.mu.Lock()
-	defer w.r.mu.Unlock()
-	defer w.r.setup()
-	w.r.keywords = append(w.r.keywords, keywords...)
-}
-
-// UnsetKeyword unsets the keywords to be masked in the output.
-func (w *Writer) UnsetKeyword(keywords ...string) {
-	w.mu.Lock()
-	defer w.mu.Unlock()
-	defer w.r.setup()
-	for _, keyword := range keywords {
-		for i, k := range w.r.keywords {
-			if k == keyword {
-				w.r.keywords = append(w.r.keywords[:i], w.r.keywords[i+1:]...)
-			}
-		}
-	}
-}
-
-// ResetKeywords resets the keywords to be masked in the output.
-func (w *Writer) ResetKeywords() {
-	w.mu.Lock()
-	defer w.mu.Unlock()
-	defer w.r.setup()
-	w.r.keywords = nil
-}
-
-// SetRedactMessage sets the message to be used for redaction.
-func (w *Writer) SetRedactMessage(redactMessage string) {
-	w.mu.Lock()
-	defer w.mu.Unlock()
-	defer w.r.setup()
-	w.r.redactMessage = redactMessage
-}
-
 // DisableAutoFlush disables auto flush.
 func (w *Writer) DisableAutoFlush() {
 	w.mu.Lock()
@@ -158,11 +124,79 @@ func (w *Writer) DisableAutoFlush() {
 	w.disableAutoFlush = true
 }
 
-func (r *rule) mask(in string) string {
+// SetKeyword sets the keywords to be masked in the output.
+func (w *Writer) SetKeyword(keywords ...string) {
+	w.r.SetKeyword(keywords...)
+}
+
+// UnsetKeyword unsets the keywords to be masked in the output.
+func (w *Writer) UnsetKeyword(keywords ...string) {
+	w.r.UnsetKeyword(keywords...)
+}
+
+// ResetKeywords resets the keywords to be masked in the output.
+func (w *Writer) ResetKeywords() {
+	w.r.ResetKeywords()
+}
+
+// SetRedactMessage sets the message to be used for redaction.
+func (w *Writer) SetRedactMessage(redactMessage string) {
+	w.r.SetRedactMessage(redactMessage)
+}
+
+// Rule returns the masking rule.
+func (w *Writer) Rule() *Rule {
+	return w.r
+}
+
+// SetRule sets the masking rule.
+func (w *Writer) SetRule(r *Rule) {
+	w.r = r
+}
+
+// SetKeyword sets the keywords to be masked in the output.
+func (r *Rule) SetKeyword(keywords ...string) {
+	r.mu.Lock()
+	defer r.mu.Unlock()
+	defer r.setup()
+	r.keywords = append(r.keywords, keywords...)
+}
+
+// UnsetKeyword unsets the keywords to be masked in the output.
+func (r *Rule) UnsetKeyword(keywords ...string) {
+	r.mu.Lock()
+	defer r.mu.Unlock()
+	defer r.setup()
+	for _, keyword := range keywords {
+		for i, k := range r.keywords {
+			if k == keyword {
+				r.keywords = append(r.keywords[:i], r.keywords[i+1:]...)
+			}
+		}
+	}
+}
+
+// ResetKeywords resets the keywords to be masked in the output.
+func (r *Rule) ResetKeywords() {
+	r.mu.Lock()
+	defer r.mu.Unlock()
+	defer r.setup()
+	r.keywords = nil
+}
+
+// SetRedactMessage sets the message to be used for redaction.
+func (r *Rule) SetRedactMessage(redactMessage string) {
+	r.mu.Lock()
+	defer r.mu.Unlock()
+	defer r.setup()
+	r.redactMessage = redactMessage
+}
+
+func (r *Rule) mask(in string) string {
 	return r.replacer.Replace(in)
 }
 
-func (r *rule) setup() {
+func (r *Rule) setup() {
 	var reps []string
 	for _, keyword := range r.keywords {
 		reps = append(reps, keyword, r.redactMessage)
