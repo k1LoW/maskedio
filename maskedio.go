@@ -36,10 +36,7 @@ type Writer struct {
 
 // NewWriter returns a new Writer that masks the output based on the keywords provided.
 func NewWriter(w io.Writer) *Writer {
-	return &Writer{
-		w: w,
-		r: NewRule(),
-	}
+	return NewRule().NewWriter(w)
 }
 
 // NewSyncedWriter returns a new Writer with syncronized masking rule.
@@ -152,6 +149,14 @@ func (w *Writer) Rule() *Rule {
 // SetRule sets the masking rule.
 func (w *Writer) SetRule(r *Rule) {
 	w.r = r
+}
+
+// NewWriter returns a new Writer that masks the output based on the keywords provided.
+func (r *Rule) NewWriter(w io.Writer) *Writer {
+	return &Writer{
+		w: w,
+		r: r,
+	}
 }
 
 // SetKeyword sets the keywords to be masked in the output.
