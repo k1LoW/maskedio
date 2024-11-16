@@ -1,5 +1,7 @@
 # Changelog
 
+## [v0.3.1](https://github.com/k1LoW/maskedio/compare/v0.3.0...v0.3.1) - 2024-11-16
+
 ## [v0.3.0](https://github.com/k1LoW/maskedio/compare/v0.2.0...v0.3.0) - 2024-11-15
 ### New Features 🎉
 - Add Rule.NewWriter() by @k1LoW in https://github.com/k1LoW/maskedio/pull/4
