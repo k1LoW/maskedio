@@ -1,5 +1,9 @@
 # Changelog
 
+## [v0.4.1](https://github.com/k1LoW/maskedio/compare/v0.4.0...v0.4.1) - 2024-11-17
+### Other Changes
+- Add Writer.Writer() by @k1LoW in https://github.com/k1LoW/maskedio/pull/9
+
 ## [v0.4.0](https://github.com/k1LoW/maskedio/compare/v0.3.0...v0.4.0) - 2024-11-17
 ### New Features 🎉
 - Export Rule.Mask by @k1LoW in https://github.com/k1LoW/maskedio/pull/8
