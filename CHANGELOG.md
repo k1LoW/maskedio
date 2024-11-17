@@ -1,5 +1,11 @@
 # Changelog
 
+## [v0.4.0](https://github.com/k1LoW/maskedio/compare/v0.3.0...v0.4.0) - 2024-11-17
+### New Features 🎉
+- Export Rule.Mask by @k1LoW in https://github.com/k1LoW/maskedio/pull/8
+### Fix bug 🐛
+- Fix nil pointer dereference in maskedio.go by @k1LoW in https://github.com/k1LoW/maskedio/pull/7
+
 ## [v0.3.0](https://github.com/k1LoW/maskedio/compare/v0.2.0...v0.3.0) - 2024-11-15
 ### New Features 🎉
 - Add Rule.NewWriter() by @k1LoW in https://github.com/k1LoW/maskedio/pull/4
