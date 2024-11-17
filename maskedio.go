@@ -94,7 +94,7 @@ func (w *Writer) Write(p []byte) (n int, err error) {
 		}
 	}
 
-	s := w.r.mask(string(p))
+	s := w.r.Mask(string(p))
 
 	if _, err := w.w.Write([]byte(s)); err != nil {
 		return 0, err
@@ -197,7 +197,8 @@ func (r *Rule) SetRedactMessage(redactMessage string) {
 	r.redactMessage = redactMessage
 }
 
-func (r *Rule) mask(in string) string {
+// Mask masks the input based on the keywords provided.
+func (r *Rule) Mask(in string) string {
 	return r.replacer.Replace(in)
 }
 
