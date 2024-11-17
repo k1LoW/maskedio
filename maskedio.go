@@ -152,8 +152,8 @@ func (w *Writer) SetRule(r *Rule) {
 	w.r = r
 }
 
-// Writer returns the underlying writer.
-func (w *Writer) Writer() io.Writer {
+// Unwrap returns the underlying writer.
+func (w *Writer) Unwrap() io.Writer {
 	return w.w
 }
 
