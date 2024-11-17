@@ -152,6 +152,11 @@ func (w *Writer) SetRule(r *Rule) {
 	w.r = r
 }
 
+// Writer returns the underlying writer.
+func (w *Writer) Writer() io.Writer {
+	return w.w
+}
+
 // NewWriter returns a new Writer that masks the output based on the keywords provided.
 func (r *Rule) NewWriter(w io.Writer) *Writer {
 	return &Writer{
