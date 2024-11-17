@@ -22,6 +22,7 @@ func NewRule() *Rule {
 	return &Rule{
 		keywords:      nil,
 		redactMessage: defaultRedactMessage,
+		replacer:      strings.NewReplacer(),
 	}
 }
 
