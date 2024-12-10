@@ -2,6 +2,7 @@ package maskedio
 
 import (
 	"io"
+	"slices"
 	"strings"
 	"sync"
 	"time"
@@ -96,7 +97,6 @@ func (w *Writer) Write(p []byte) (n int, err error) {
 	}
 
 	s := w.r.Mask(string(p))
-
 	if _, err := w.w.Write([]byte(s)); err != nil {
 		return 0, err
 	}
@@ -210,7 +210,12 @@ func (r *Rule) Mask(in string) string {
 
 func (r *Rule) setup() {
 	var reps []string
+	slices.Sort(r.keywords)
+	r.keywords = slices.Compact(r.keywords)
 	for _, keyword := range r.keywords {
+		if keyword == "" {
+			continue
+		}
 		reps = append(reps, keyword, r.redactMessage)
 	}
 	r.replacer = strings.NewReplacer(reps...)
