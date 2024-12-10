@@ -55,6 +55,12 @@ func TestWriter(t *testing.T) {
 			14,
 			"password: pass",
 		},
+		{
+			[]string{"", "passw0rd"},
+			[]string{"password: pass"},
+			14,
+			"password: pass",
+		},
 	}
 	for i, tt := range tests {
 		tt := tt
