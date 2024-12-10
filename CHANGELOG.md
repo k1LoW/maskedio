@@ -1,5 +1,7 @@
 # Changelog
 
+## [v0.4.4](https://github.com/k1LoW/maskedio/compare/v0.4.3...v0.4.4) - 2024-12-10
+
 ## [v0.4.3](https://github.com/k1LoW/maskedio/compare/v0.4.2...v0.4.3) - 2024-12-10
 ### Fix bug 🐛
 - Do not replace empty string. by @k1LoW in https://github.com/k1LoW/maskedio/pull/13
