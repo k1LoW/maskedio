@@ -1,5 +1,9 @@
 # Changelog
 
+## [v0.4.3](https://github.com/k1LoW/maskedio/compare/v0.4.2...v0.4.3) - 2024-12-10
+### Fix bug 🐛
+- Do not replace empty string. by @k1LoW in https://github.com/k1LoW/maskedio/pull/13
+
 ## [v0.4.2](https://github.com/k1LoW/maskedio/compare/v0.4.1...v0.4.2) - 2024-11-17
 ### Other Changes
 - Rename Writer.Writer to Writer.Unwrap by @k1LoW in https://github.com/k1LoW/maskedio/pull/11
