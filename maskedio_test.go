@@ -99,7 +99,9 @@ func TestNewSyncedWriter(t *testing.T) {
 
 	{
 		w.SetKeyword("passw0rd")
-		nw.Write([]byte("password: passw0rd"))
+		if _, err := nw.Write([]byte("password: passw0rd")); err != nil {
+			t.Fatal(err)
+		}
 		nw.Flush()
 
 		got := buf.String()
@@ -112,7 +114,9 @@ func TestNewSyncedWriter(t *testing.T) {
 
 	{
 		w.SetKeyword("secret")
-		nw.Write([]byte("password: secret"))
+		if _, err := nw.Write([]byte("password: secret")); err != nil {
+			t.Fatal(err)
+		}
 		nw.Flush()
 		got := buf.String()
 		want := "password: *****"
@@ -130,7 +134,9 @@ func TestNewSameWriter(t *testing.T) {
 	nw := w.NewSameWriter(buf)
 
 	{
-		nw.Write([]byte("password: passw0rd"))
+		if _, err := nw.Write([]byte("password: passw0rd")); err != nil {
+			t.Fatal(err)
+		}
 		nw.Flush()
 
 		got := buf.String()
@@ -143,7 +149,9 @@ func TestNewSameWriter(t *testing.T) {
 
 	{
 		w.SetKeyword("secret")
-		nw.Write([]byte("password: secret"))
+		if _, err := nw.Write([]byte("password: secret")); err != nil {
+			t.Fatal(err)
+		}
 		nw.Flush()
 		got := buf.String()
 		want := "password: secret"
