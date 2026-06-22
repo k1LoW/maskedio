@@ -1,5 +1,14 @@
 # Changelog
 
+## [v0.4.5](https://github.com/k1LoW/maskedio/compare/v0.4.4...v0.4.5) - 2026-06-22
+
+### Other Changes
+- chore: setup tagpr labels by @k1LoW in https://github.com/k1LoW/maskedio/pull/18
+- chore(deps): bump the dependencies group across 1 directory with 2 updates by @dependabot[bot] in https://github.com/k1LoW/maskedio/pull/17
+- chore(deps): bump k1LoW/oldstable from 1 to 2 in the dependencies group by @dependabot[bot] in https://github.com/k1LoW/maskedio/pull/20
+- chore(deps): bump actions/checkout from 5 to 6 in the dependencies group by @dependabot[bot] in https://github.com/k1LoW/maskedio/pull/21
+- chore(deps): bump actions/checkout from 6 to 7 in the dependencies group by @dependabot[bot] in https://github.com/k1LoW/maskedio/pull/22
+
 ## [v0.4.4](https://github.com/k1LoW/maskedio/compare/v0.4.3...v0.4.4) - 2024-12-10
 
 ## [v0.4.3](https://github.com/k1LoW/maskedio/compare/v0.4.2...v0.4.3) - 2024-12-10
