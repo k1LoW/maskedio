@@ -56,6 +56,12 @@ func TestWriter(t *testing.T) {
 			"password: pass",
 		},
 		{
+			[]string{"SECRETVALUE"},
+			[]string{"a=SECRETVALUE b=SECR"},
+			20,
+			"a=***** b=SECR",
+		},
+		{
 			[]string{"", "passw0rd"},
 			[]string{"password: pass"},
 			14,
