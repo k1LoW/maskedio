@@ -108,7 +108,10 @@ func (w *Writer) Flush() error {
 	w.mu.Lock()
 	defer w.mu.Unlock()
 	if len(w.buf) > 0 {
-		_, err := w.w.Write(w.buf)
+		w.r.mu.RLock()
+		s := w.r.Mask(string(w.buf))
+		w.r.mu.RUnlock()
+		_, err := w.w.Write([]byte(s))
 		w.buf = nil
 		return err
 	}
