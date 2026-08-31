@@ -106,13 +106,14 @@ func (w *Writer) Write(p []byte) (n int, err error) {
 // Flush writes any buffered data to the underlying writer.
 func (w *Writer) Flush() error {
 	w.mu.Lock()
-	defer w.mu.Unlock()
-	if len(w.buf) > 0 {
+	buf := w.buf
+	w.buf = nil
+	w.mu.Unlock()
+	if len(buf) > 0 {
 		w.r.mu.RLock()
-		s := w.r.Mask(string(w.buf))
+		s := w.r.Mask(string(buf))
 		w.r.mu.RUnlock()
 		_, err := w.w.Write([]byte(s))
-		w.buf = nil
 		return err
 	}
 	return nil
