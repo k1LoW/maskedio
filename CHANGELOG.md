@@ -1,5 +1,10 @@
 # Changelog
 
+## [v0.4.6](https://github.com/k1LoW/maskedio/compare/v0.4.5...v0.4.6) - 2026-09-28
+
+### Other Changes
+- ci: generate CREDITS with gocredits v1.0.0 from a make target by @k1LoW in https://github.com/k1LoW/maskedio/pull/30
+
 ## [v0.4.5](https://github.com/k1LoW/maskedio/compare/v0.4.4...v0.4.5) - 2026-08-31
 
 ### Fix bug 🐛
